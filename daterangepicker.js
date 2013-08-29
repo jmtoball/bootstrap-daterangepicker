@@ -776,6 +776,7 @@
                         if (calendar[row][col].isSame(this.startDate)) { cname += ' start-date '; }
                         if (calendar[row][col].isSame(this.endDate)) { cname += ' end-date '; }
                     }
+                    if (calendar[row][col].isSame(moment().startOf('day'))) { cname += ' today '; }
 
                     var title = 'r' + row + 'c' + col;
                     html += '<td class="' + cname.replace(/\s+/g, ' ').replace(/^\s?(.*?)\s?$/, '$1') + '" data-title="' + title + '">' + calendar[row][col].date() + '</td>';
