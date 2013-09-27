@@ -92,11 +92,11 @@
                   '<div class="range_inputs">' +
                     '<div class="daterangepicker_start_input" style="float: left">' +
                       '<label for="daterangepicker_start">' + this.locale.fromLabel + '</label>' +
-                      '<input class="input-mini" type="text" name="daterangepicker_start" value="" readonly="readonly" />' +
+                      '<input class="input-mini" type="text" name="daterangepicker_start" value=""/>' +
                     '</div>' +
                     '<div class="daterangepicker_end_input" style="float: left; padding-left: 11px">' +
                       '<label for="daterangepicker_end">' + this.locale.toLabel + '</label>' +
-                      '<input class="input-mini" type="text" name="daterangepicker_end" value="" readonly="readonly" />' +
+                      '<input class="input-mini" type="text" name="daterangepicker_end" value=""/>' +
                     '</div>' +
                     '<button class="' + this.applyClass + ' applyBtn" disabled="disabled">' + this.locale.applyLabel + '</button>&nbsp;' +
                     '<button class="' + this.cancelClass + ' cancelBtn">' + this.locale.cancelLabel + '</button>' +
@@ -292,6 +292,8 @@
         this.container.find('.ranges').on('click', '.daterangepicker_start_input', $.proxy(this.showCalendars, this));
         this.container.find('.ranges').on('click', '.daterangepicker_end_input', $.proxy(this.showCalendars, this));
 
+        this.container.find('.ranges').on('keyup', 'input', $.proxy(this.updateFromInputs, this));
+
         this.container.find('.calendar').on('click', 'td.available', $.proxy(this.clickDate, this));
         this.container.find('.calendar').on('mouseenter', 'td.available', $.proxy(this.enterDate, this));
         this.container.find('.calendar').on('mouseleave', 'td.available', $.proxy(this.updateView, this));
@@ -351,6 +353,23 @@
             this.endDate = end;
 
             this.notify();
+            this.updateCalendars();
+        },
+
+
+        updateFromInputs: function () {
+            start = moment(this.container.find('input[name=daterangepicker_start]').val(), this.format);
+            end = moment(this.container.find('input[name=daterangepicker_end]').val(), this.format);
+
+            if (start == null || end == null) return;
+            if (end.isBefore(start)) return;
+
+            if (this.element.is('input')) this.element.val(start.format(this.format) + this.separator + end.format(this.format));
+            this.startDate = start;
+            this.endDate = end;
+            this.leftCalendar.month.month(this.startDate.month()).year(this.startDate.year());
+            this.rightCalendar.month.month(this.endDate.month()).year(this.endDate.year());
+
             this.updateCalendars();
         },
 
